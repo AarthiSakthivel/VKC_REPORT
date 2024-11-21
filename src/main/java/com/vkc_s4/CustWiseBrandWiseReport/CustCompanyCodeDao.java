@@ -1,0 +1,18 @@
+package com.vkc_s4.CustWiseBrandWiseReport;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import lombok.Data;
+
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class CustCompanyCodeDao {
+
+	   @JsonProperty("d:CompanyCode")
+	    private String dCompanyCode;
+
+	    @JsonProperty("d:CompanyCodeName")
+	    private String dCompanyCodeName;
+ 
+}

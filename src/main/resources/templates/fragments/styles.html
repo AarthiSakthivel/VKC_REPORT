@@ -1,0 +1,278 @@
+<div th:fragment="links">
+	<!--<link rel="stylesheet" href="/Css/colourMaster.css">-->
+	<!-- Google Font: Source Sans Pro -->
+	<link rel="stylesheet"
+		href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+	<!-- Font Awesome -->
+	<link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+	<!-- Theme style -->
+	<link rel="stylesheet" href="dist/css/adminlte.min.css">
+	<!-- overlayScrollbars -->
+	<link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+	<!-- jQuery -->
+	<script src="plugins/jquery/jquery.min.js"></script>
+	<!-- jQuery UI 1.11.4 -->
+	<script src="plugins/jquery-ui/jquery-ui.min.js"></script>
+	<!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
+	<script>
+		$.widget.bridge('uibutton', $.ui.button)
+	</script>
+	<!-- Bootstrap 4 -->
+	<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<!-- overlayScrollbars -->
+	<script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+	<!-- AdminLTE App -->
+	<script src="dist/js/adminlte.js"></script>
+	<!-- AdminLTE for demo purposes -->
+	<script src="dist/js/demo.js"></script>
+
+	<!--SweetAlert-->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+	<!--Itemmaster Js-->
+	<script src="/Js/itemMasterJS.js"></script>
+	<!--ColourMasterJS-->
+	<script src="/Js/ColourMasterJS.js"></script>
+	<!--MrpIndicatorJS-->
+	<script src="/Js/MrpIndicatorJS.js"></script>
+	<!--numberOfPairsJS-->
+	<script src="/Js/numberOfPairsJS.js"></script>
+	<!--packingSortmentJS-->
+	<script src="/Js/packingSortmentJS.js"></script>
+	<!--sizeCategoryJS-->
+	<script src="/Js/sizeCategoryJS.js"></script>
+	<!--sizeCombinationJS-->
+	<script src="/Js/sizeCombinationJS.js"></script>
+
+</div>
+
+
+<div class="modal fade" th:fragment="ColourMaster_Modal" id="colourCode_Modal" tabindex="-1" role="dialog"
+	aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Colour Master</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body d-flex justify-content-center align-items-center flex-column">
+
+				<div class="mb-3 w-75">
+					<label for="exampleInputEmail1" class="form-label">Colour Code
+						:<span class="text-danger">*</span></label>
+					<input type="text" class="form-control" id="ColourCode" aria-describedby="emailHelp">
+				</div>
+				<div class="mb-3 w-75">
+					<label for="exampleInputPassword1" class="form-label">Colour
+						Name :<span class="text-danger">*</span></label>
+					<input type="text" class="form-control" id="ColourName">
+				</div>
+				<div class="mb-3 w-75">
+					<label for="exampleInputPassword1" class="form-label">Remark
+						:</label>
+					<input type="text" class="form-control" id="ColourMasterRemark">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button class="btn btn-success " onclick="colourMasterSave()">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!-- Modal Size Category-->
+<div class="modal fade" th:fragment="SizeCategory_Modal" id="sizeCategory_Modal" tabindex="-1" role="dialog"
+	aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Size Category</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body d-flex justify-content-center align-items-center flex-column">
+				<div class="mb-3 w-75">
+					<label for="exampleInputEmail1" class="form-label">Size Code :<span
+							class="text-danger">*</span></label>
+					<input type="text" class="form-control" id="SizeCode">
+				</div>
+				<div class="mb-3 w-75">
+					<label for="exampleInputPassword1" class="form-label">Size Name
+						:<span class="text-danger">*</span></label>
+					<input type="text" class="form-control" id="SizeName">
+				</div>
+				<div class="mb-3 w-75">
+					<label for="exampleInputPassword1" class="form-label">Remark
+						:</label>
+					<input type="text" class="form-control" id="SizeCategoryRemark">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button class="btn btn-success" onclick="sizeCategory_save()">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- Modal Size Category End-->
+
+
+<!--MRP indicator Modal Start-->
+<div class="modal fade" th:fragment="MRPindicator_Modal" id="MRPindicator_modal" tabindex="-1" role="dialog"
+	aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">MRP Indicator</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body d-flex justify-content-center align-items-center flex-column">
+				<div class="mb-3 w-75">
+					<label for="exampleInputEmail1" class="form-label">MRP code:<span
+							class="text-danger">*</span></label>
+					<input type="text" class="form-control" id="MRPcode" aria-describedby="emailHelp">
+				</div>
+				<div class="mb-3 w-75">
+					<label for="exampleInputPassword1" class="form-label">MRP name
+						:<span class="text-danger">*</span></label>
+					<input type="text" class="form-control" id="MRPname">
+				</div>
+				<div class="mb-3 w-75">
+					<label for="exampleInputPassword1" class="form-label">Remark
+						:</label>
+					<input type="text" class="form-control" id="MRPRemark">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button class="btn btn-success " onclick="MrpIndicatorSave()">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--MRP indicator Modal End-->
+
+
+<!--Size Combination Modal Start-->
+<div class="modal fade" th:fragment="SizeCombination_Modal" id="SizeCombination_Modal" tabindex="-1" role="dialog"
+	aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">SizeCombination</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body d-flex justify-content-center align-items-center flex-column">
+				<div class="mb-3 w-75">
+					<label for="exampleInputEmail1" class="form-label">Size Combination
+						Code :<span class="text-danger">*</span></label>
+					<input type="text" class="form-control" id="SizeCombinationCode">
+				</div>
+				<div class="mb-3 w-75">
+					<label for="exampleInputPassword1" class="form-label">Size
+						Combination Name :<span class="text-danger">*</span></label>
+					<input type="text" class="form-control" id="SizeCombinationName">
+				</div>
+				<div class="mb-3 w-75">
+					<label for="exampleInputPassword1" class="form-label">Remark
+						:</label>
+					<input type="text" class="form-control" id="SizeCombinationRemark">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button class="btn btn-success" onclick="sizeCombination_save()">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--Size Combination Modal End-->
+
+
+<!--packing assortment Modal start-->
+<div class="modal fade" th:fragment="PackingAssortment_Modal" id="PackingAssortment_Modal" tabindex="-1" role="dialog"
+	aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body d-flex justify-content-center align-items-center flex-column">
+				<div class="mb-3 w-75">
+					<label for="exampleInputEmail1" class="form-label">Packing Code
+						:<span class="text-danger">*</span></label>
+					<input type="text" class="form-control" id="PackingCode" aria-describedby="emailHelp">
+				</div>
+				<div class="mb-3 w-75">
+					<label for="exampleInputPassword1" class="form-label">Packing Name
+						:<span class="text-danger">*</span></label>
+					<input type="text" class="form-control" id="PackingName">
+				</div>
+				<div class="mb-3 w-75">
+					<label for="exampleInputPassword1" class="form-label">Remark
+						:</label>
+					<input type="text" class="form-control" id="PackingassortmentRemark">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button class="btn btn-success " onclick="packingAssortmentSave()">Submit</button>
+			</div>
+		</div>
+	</div>
+</div>
+<!--packing assortment Modal End-->
+
+
+
+<!--NumberofPairs Modal Start-->
+<div class="modal fade" th:fragment="NumberofPairs_Modal" id="NumberofPairs_Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle"
+	aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle">NumberofPairs</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body d-flex justify-content-center align-items-center flex-column">
+				<div class="mb-3 w-75">
+					<label for="exampleInputEmail1" class="form-label">Number Of Pair
+						:<span class="text-danger">*</span></label>
+					<input type="text" class="form-control" id="NumberOfPair" aria-describedby="emailHelp">
+				</div>
+				<div class="mb-3 w-75">
+					<label for="exampleInputPassword1" class="form-label">Pair :<span
+							class="text-danger">*</span></label>
+					<input type="text" class="form-control" id="Pair">
+				</div>
+				<div class="mb-3 w-75">
+					<label for="exampleInputPassword1" class="form-label">Remark
+						:</label>
+					<input type="text" class="form-control" id="NumberOfPairRemark">
+				</div>
+		<!--		<div class="mb-3 w-75">
+				
+				</div>-->
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+				<button class="btn btn-success " onclick="numberOfPairSave()">Submit</button>
+				<!--<button type="button" class="btn btn-primary">Save changes</button>-->
+			</div>
+		</div>
+	</div>
+</div>
+<!--NumberofPairs Modal End-->

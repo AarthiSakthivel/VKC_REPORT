@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Previous Months Sale</title>
+	<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+	<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+	<!-- Bootstrap CSS -->
+	<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+	<!-- DataTables CSS -->
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+
+	<style>
+		/* Card Styling */
+		.card {
+			box-shadow: 5px 5px 10px #C1DBFE;
+			border-radius: 10px;
+		}
+		
+		.table-container {
+			display: flex;
+			justify-content: center;
+			margin-top: 40px;
+		}
+		
+		/* Table Styling */
+		.table {
+			border-collapse: collapse;
+			width: 100%;
+			overflow: auto;
+			border: 1px solid black;
+			margin-top: 20px;
+		}
+		
+		.table th, .table td {
+			border: 1px solid black;
+			padding: 8px;
+			text-align: center;
+		}
+		
+		.table th {
+			background-color: #5697B7;
+			color: white;
+		}
+		
+		.table tbody tr:hover {
+			background-color: #f1f1f1;
+		}
+
+		/* Button Styling */
+		.btn-outline-info {
+			color: #17a2b8;
+			border-color: #17a2b8;
+		}
+		
+		.btn-outline-info:hover {
+			background-color: #17a2b8;
+			color: white;
+		}
+		
+		/* General Styling */
+		body {
+			background-color: #f8f9fa;
+		}
+		
+		.card-header h3 img {
+			vertical-align: middle;
+			margin-right: 10px;
+		}
+		
+		.card-header {
+			background-color: #5697B7;
+			color: white;
+			border-bottom: none;
+		}
+		
+		.card-title {
+			font-size: 1.25rem;
+			font-weight: bold;
+		}
+		
+		.card-tools .btn-tool {
+			color: white;
+		}
+	</style>
+</head>
+
+<body class="hold-transition sidebar-collapse">
+	<!-- Site wrapper -->
+	<div class="wrapper">
+		<!-- Navbar -->
+		<div th:replace="fragments/common :: TopNavBar ('Sales Report','/vkc/reports/sales-threemonths')"></div>
+		<!-- /.Navbar -->
+
+		<!-- Content Wrapper. Contains page content -->
+		<div class="">
+			<!-- Content Header (Page header) -->
+			<section class="content-header">
+				<div class="container">
+					<form action="/vkc/reports/sales-threemonths/filter" method="GET">
+						<div class="card">
+							<div class="card-header">
+								<h3 class="card-title">
+									<img src="/dist/img/filter1.png" height="25px;"> Selection Criteria
+								</h3>
+								<div class="card-tools">
+									<button type="button" class="btn btn-tool" data-card-widget="collapse">
+										<i class="fas fa-minus"></i>
+									</button>
+								</div>
+							</div>
+							<div class="card-body">
+								<div class="row mt-4">
+									<div class="col-md-2">
+										<button type="submit" class="btn btn-sm btn-outline-info">Filter</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</section>
+		</div>
+
+		<div class="table-container">
+			<div class="table-wrapper">
+				<div class="row">
+					<div class="col-lg-1"></div>
+					<div class="col-lg-10 table-responsive">
+						<table id="sales-table" class="table table-bordered mx-3">
+							<thead>
+								<tr class="text-center text-nowrap fw-bold">
+									<th>Model</th>
+									<th>Color</th>
+									<th>Size Chat</th>
+									<th>Product Type</th>
+									<th>M.R.P</th>
+									<th>Brand</th>
+									<th>Brand Code</th>
+									<th>Previous First Month Sale</th>
+									<th>Second First Month Sale</th>
+									<th>Third First Month Sale</th>
+									<th>State Code</th>
+									<th>State Name</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="data: ${data}">
+									<td th:text="${data.model}"></td>
+									<td th:text="${data.color}"></td>
+									<td th:text="${data.sizeChat}"></td>
+									<td th:text="${data.productType}"></td>
+									<td th:text="${data.mrp}"></td>
+									<td th:text="${data.brand}"></td>
+									<td th:text="${data.brandCode}"></td>
+									<td th:text="${data.previousFirstMonthSale}"></td>
+									<td th:text="${data.previousSecondMonthSale}"></td>
+									<td th:text="${data.previousThirdMonthSale}"></td>
+									<td th:text="${data.stateCode}"></td>
+									<td th:text="${data.stateName}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="col-lg-1"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Footer Links -->
+	<div th:replace="fragments/common :: footer-links"></div>
+
+	<!-- jQuery and Bootstrap JS -->
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<!-- DataTables JS -->
+	<script src="https://cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+	<script>
+		$(document).ready(function() {
+			$('#sales-table').DataTable({
+				"pageLength": 10,
+				"lengthChange": false,
+				"searching": false,
+				"info": false
+			});
+		});
+	</script>
+</body>
+
+</html>

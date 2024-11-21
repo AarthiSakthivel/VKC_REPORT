@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- fragment :  HeaderLinks -->
+<title>VKC || Customerwise Brandwise Sales with Crnote</title>
+<div th:replace="fragments/common :: head"></div>
+
+<style>
+.flex-container {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+}
+
+.scroll-container {
+	overflow-x: auto;
+	white-space: nowrap;
+}
+
+.table-container {
+	display: inline-block;
+	vertical-align: top;
+	min-width: 300px;
+	white-space: normal;
+}
+
+.card {
+	box-shadow: 5px 5px 10px #C1DBFE;
+	border-radius: 10px;
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-left: 110px;
+	/* Ensures borders are not doubled */
+}
+
+/* Table header and data cell styles */
+th, td {
+	border: 1px solid #dddddd;
+	/* Light gray border */
+	padding: 8px;
+	/* Adds some padding inside cells */
+	text-align: center;
+	/* Aligns text to the left */
+}
+
+/* Header row styles */
+th {
+	background-color:rgba(0,134,179,1);
+	color: white;	/* Light gray background for headers */
+}
+
+/* Alternate row colors for better readability */
+tr:nth-child(even) {
+	background-color: #f9f9f9;
+	/* Light background for even rows */
+}
+
+/* Table styles for company code and plant data */
+.company-header {
+	background-color: deepskyblue;
+	/* Light blue background for company code rows */
+}
+
+.plant-header {
+	background-color: #e6f7ff;
+	/* Lighter blue background for plant headers */
+}
+
+.table-header {
+	color: white;
+	text-align: center;
+	padding: 10px;
+	margin-bottom: -10px; /* Adjust to better align with table */
+}
+
+.roww {
+	height: 37px;
+}
+
+button {
+	margin: 10px;
+	padding: 10px;
+	background-color: #007bff;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	display: flex;
+	align-items: center;
+}
+
+button:hover {
+	background-color: #0056b3;
+}
+
+.btn-icon {
+	margin-right: 8px;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove
+	{
+	left: -5px;
+	top: -10px;
+}
+</style>
+<!--  HeaderLinks -->
+<!-- Include SheetJS library -->
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<body class="hold-transition  sidebar-collapse">
+	<!-- Site wrapper -->
+	<div class="wrapper">
+
+		<!-- fragment :  Navbar -->
+		<div
+			th:replace="fragments/common :: TopNavBar ('Customerwise Brandwise Sales with Crnote ','/vkc/reports/sales-creditmemo')">
+		</div>
+
+		<div class="">
+			<!-- Content Header (Page header) -->
+			<section class="content-header">
+				<div class="container">
+					<form action="/vkc/reports/sales-creditmemo/filter" th:object="${Data}"
+						method="get">
+						<div class="card">
+							<div class="card-header">
+								<h3 class="card-title">
+									<img src="/dist/img/filter1.png" height="25px;">
+									Selection
+								</h3>
+								<div class="card-tools">
+									<button type="button" class="btn btn-tool"
+										data-card-widget="collapse">
+										<i class="fas fa-minus"></i>
+									</button>
+
+								</div>
+							</div>
+							<div class="card-body">
+								<div class="row">
+									<div class="col-md-3">
+										<label><img src="/dist/img/calendar.png"
+											height="20px;"> From Date: <span style="color: red">*</span></label>
+										<input type="date" name="fromDate" required
+											class="form-control form-control-sm" /> <span
+											th:text="${fromDate}" class="text-bold"></span>
+									</div>
+									<div class="col-md-3">
+										<label><img src="/dist/img/calendar.png"
+											height="20px;"> To Date: <span style="color: red">*</span>
+										</label> <input type="date" name="toDate"
+											class="form-control form-control-sm" required /> <span
+											th:text="${toDate}" class="text-bold"></span>
+									</div>
+									<div class="col-md-2" style="margin-top: 21px;">
+										<!--<button type="submit" class="btn btn-sm btn-outline-info mt-2"> <i
+												class="fa fa-filter"></i> Filter
+										</button>-->
+										<button type="submit" class="btn btn-outline-info btn-sm mt-2"
+											onclick="getData()">View List</button>
+									</div>
+								</div>
+								<div class="row mt-3">
+									<div class="col-md-3">
+										<label>Company Code:<span style="color: red;">*</span></label>
+										<div class="dropdown-container">
+											<label> <input type="checkbox" class="select-all"
+												data-target="#companyCodeDropdown"> Select All
+											</label> <select name="companyCode" class="form-control select2"
+												id="companyCodeDropdown" multiple style="width: 100%;"
+												required>
+												<option th:each="obj : ${companyCode}"
+													th:value="${obj.dCompanyCode}"
+													th:text="${obj.dCompanyCode} + ' - ' + ${obj.dCompanyCodeName}">
+												</option>
+											</select> <span th:text="${selectedCompanyCode}" style="color: blue;"
+												class="text-bold"></span>
+										</div>
+									</div>
+
+									<div class="col-md-3">
+										<label>Plant Code:<span style="color: red;">*</span></label>
+										<div class="dropdown-container">
+											<label> <input type="checkbox" class="select-all"
+												data-target="#plantCodeDropdown"> Select All
+											</label> <select name="plant" class="form-control select2 plantCode"
+												id="plantCodeDropdown" multiple style="width: 100%;"
+												required>
+												<option th:each="obj : ${plant}"
+													th:value="${obj.dPlant}"
+													th:text="${obj.dPlant} + ' - ' + ${obj.dPlantName}">
+												</option>
+											</select> <span th:text="${selectedPlantCode}" style="color: blue;"
+												class="text-bold"></span>
+										</div>
+									</div>
+									
+									<div class="col-md-3">
+										<label>Material Group:<span style="color: red;">*</span></label>
+										<div class="dropdown-container">
+											<label> <input type="checkbox" class="select-all"
+												data-target="#materialGroupDropdown"> Select All
+											</label> <select name="materialGroup" class="form-control select2 plantCode"
+												id="materialGroupDropdown" multiple style="width: 100%;"
+												required>
+												<option th:each="obj : ${materialGroups}"
+													th:value="${obj.dMaterialGroup}"
+													th:text="${obj.dMaterialGroup} + ' - ' + ${obj.dMaterialGroupName}">
+												</option>
+											</select> <span th:text="${selectedMaterialGroup}" style="color: blue;"
+												class="text-bold"></span>
+										</div>
+									</div>
+									
+									<div class="col-md-3">
+										<label>Material Type:<span style="color: red;">*</span></label>
+										<div class="dropdown-container">
+											<label> <input type="checkbox" class="select-all"
+												data-target="#materialTypeDropdown"> Select All
+											</label> <select name="materialType" class="form-control select2 plantCode"
+												id="materialTypeDropdown" multiple style="width: 100%;"
+												required>
+												<option th:each="obj : ${materialTypes}"
+													th:value="${obj.dProductType}"
+													th:text="${obj.dProductType} + ' - ' + ${obj.dMaterialTypeName}">
+												</option>
+											</select> <span th:text="${selectedMaterialType}" style="color: blue;"
+												class="text-bold"></span>
+										</div>
+									</div>
+
+								
+								</div>
+
+
+							</div>
+						</div>
+					</form>
+				</div>
+				<!-- /.container-fluid -->
+			</section>
+
+			<!-- Main content -->
+			<section class="container">
+
+				<div th:if="${#lists.isEmpty(primaryItemList)}" align="center"
+					class="card">
+					<span style="align: center; color: #ffff"> <img
+						src="/dist/img/NoData3.png" class="text-center" height="350px;">
+					</span>
+					<h5>
+						Select the <img src="/dist/img/calendar.png" height="25px;">
+						Parameters to fetch the Customerwise and Brandwise Sales with Crnote Report !!
+					</h5>
+				</div>
+
+				<button id="exportExcel" class="btn-sm"
+					th:if="
+!${#lists.isEmpty(primaryItemList)}
+">Excel</button>
+				<h4>Data Display</h4>
+			</section>
+			
+			<table border="1" id= "itemTable">
+				<thead>
+					<tr>
+						<th  style="padding: 12px; text-align: center;" rowspan="2">Cost Center (Plant)</th>
+						<th style="padding: 12px; text-align: center;" rowspan="2">Dealer Name</th>
+						<th style="padding: 12px; text-align: center;" rowspan="2">Location</th>
+						<th style="padding: 12px; text-align: center;" rowspan="2">Zone</th>
+						<th style="padding: 12px; text-align: center;" rowspan="2">Brand</th>
+						<th style="padding: 12px; text-align: center;" colspan="10">Sales</th>
+						<th style="padding: 12px; text-align: center;" colspan="11">Credit Memo</th>
+					</tr>
+					<tr >
+						<th style="padding: 12px; text-align: center;" >Pair Qty</th>
+						<th style="padding: 12px; text-align: center;">Quantity</th>
+						<th style="padding: 12px; text-align: center;">Value Bef Disc</th>
+						<th style="padding: 12px; text-align: center;">Line Disc</th>
+						<th style="padding: 12px; text-align: center;">Discount</th>
+						<th style="padding: 12px; text-align: center;">Freight(-ive)</th>
+						<th style="padding: 12px; text-align: center;">Freight(+ive)</th>
+						<th style="padding: 12px; text-align: center;">Value After Disc</th>
+						<th style="padding: 12px; text-align: center;">Tax Amount</th>
+						<th style="padding: 12px; text-align: center;">Value With Tax</th>
+						<th style="padding: 12px; text-align: center;">Pair Qty</th>
+						<th style="padding: 12px; text-align: center;">Quantity</th>
+						<th style="padding: 12px; text-align: center;">Value Bef Disc</th>
+						<th style="padding: 12px; text-align: center;">Line Disc</th>
+						<th style="padding: 12px; text-align: center;">Discount</th>
+						<th style="padding: 12px; text-align: center;">Freight(-ive)</th>
+						<th style="padding: 12px; text-align: center;">Freight(+ive)</th>
+						<th style="padding: 12px; text-align: center;">Value After Disc</th>
+						<th style="padding: 12px; text-align: center;">Tax Amount</th>
+						<th style="padding: 12px; text-align: center;">Value With Tax</th>
+						<th style="padding: 12px; text-align: center;">Doc Total</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="data,iterator:${primaryItemList}">
+						<td  style="padding: 10px; text-align: center" th:text ="${data.costCenterPlant}"></td>
+						<td  style="padding: 10px; text-align: center" th:text="${data.dealername}" ></td>
+						<td  style="padding: 10px; text-align: center" th:text="${data.location}" ></td>
+						<td  style="padding: 10px; text-align: center" th:text="${data.zone}"></td>
+						<td  style="padding: 10px; text-align: center" th:text="${data.brand}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.pairQty_sales}"></td>
+						<td  style="padding: 10px; text-align: center" th:text="${data.quantity_sales}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.valueBefDisc_sales}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.lineDisc_sales}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.discount_sales}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.freightpositive_sales}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.freightnegative_sales}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.ValueAfterDisc_sales}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.totaltax_sales}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.value_with_tax_sales}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.pairQty_credit}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.quantity_credit}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.valueBefDisc_credit}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.lineDisc_credit}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.discount_credit}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.freightpositive_credit}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.freightnegative_credit}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.ValueAfterDisc_credit}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.totaltax_credit}"></td>
+						<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.value_with_tax_credit}"></td>
+						<td  style="padding: 10px; text-align: center" th:text="${data.docType_credit}"></td>
+						<!-- Add more rows as needed -->
+					</tr>
+					<!-- Repeat <tr> for each row of data -->
+				</tbody>
+			</table>
+			
+			
+			
+			<table border="1" id= "hiddenTable" style="display: none;">
+							<thead>
+								<tr>
+									<th  style="padding: 12px; text-align: center;" rowspan="2">Cost Center (Plant)</th>
+									<th style="padding: 12px; text-align: center;" rowspan="2">Dealer Name</th>
+									<th style="padding: 12px; text-align: center;" rowspan="2">Location</th>
+									<th style="padding: 12px; text-align: center;" rowspan="2">Zone</th>
+									<th style="padding: 12px; text-align: center;" rowspan="2">Brand</th>
+									<th style="padding: 12px; text-align: center;" colspan="10">Sales</th>
+									<th style="padding: 12px; text-align: center;" colspan="11">Credit Memo</th>
+								</tr>
+								<tr >
+									<th style="padding: 12px; text-align: center;" >Pair Qty</th>
+									
+									<th style="padding: 12px; text-align: center;">Quantity</th>
+									
+									<th style="padding: 12px; text-align: center;">Value Bef Disc</th>
+									
+									<th style="padding: 12px; text-align: center;">Line Disc</th>
+									
+									<th style="padding: 12px; text-align: center;">Discount</th>
+									
+									<th style="padding: 12px; text-align: center;">Freight(-ive)</th>
+									
+									<th style="padding: 12px; text-align: center;">Freight(+ive)</th>
+									
+									<th style="padding: 12px; text-align: center;">Value After Disc</th>
+									
+									<th style="padding: 12px; text-align: center;">Tax Amount</th>
+									
+									<th style="padding: 12px; text-align: center;">Value With Tax</th>
+									
+									<th style="padding: 12px; text-align: center;">Pair Qty</th>
+									
+									<th style="padding: 12px; text-align: center;">Quantity</th>
+									
+									<th style="padding: 12px; text-align: center;">Value Bef Disc</th>
+									
+									<th style="padding: 12px; text-align: center;">Line Disc</th>
+									
+									<th style="padding: 12px; text-align: center;">Discount</th>
+									
+									<th style="padding: 12px; text-align: center;">Freight(-ive)</th>
+									
+									<th style="padding: 12px; text-align: center;">Freight(+ive)</th>
+									
+									<th style="padding: 12px; text-align: center;">Value After Disc</th>
+									
+									<th style="padding: 12px; text-align: center;">Tax Amount</th>
+									
+									<th style="padding: 12px; text-align: center;">Value With Tax</th>
+									
+									<th style="padding: 12px; text-align: center;">Doc Total</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="data,iterator:${primaryItemList}">
+									<td  style="padding: 10px; text-align: center" th:text ="${data.costCenterPlant}"></td>
+									<td  style="padding: 10px; text-align: center" th:text="${data.dealername}" ></td>
+									<td  style="padding: 10px; text-align: center" th:text="${data.location}" ></td>
+									<td  style="padding: 10px; text-align: center" th:text="${data.zone}"></td>
+									<td  style="padding: 10px; text-align: center" th:text="${data.brand}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.pairQty_sales}"></td>
+									<td  style="padding: 10px; text-align: center" th:text="${data.quantity_sales}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.valueBefDisc_sales}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.lineDisc_sales}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.discount_sales}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.freightpositive_sales}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.freightnegative_sales}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.ValueAfterDisc_sales}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.totaltax_sales}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.value_with_tax_sales}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.pairQty_credit}"></td>
+									<td  style="padding: 10px; text-align: center" th:text="${data.quantity_credit}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.valueBefDisc_credit}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.lineDisc_credit}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.discount_credit}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.freightpositive_credit}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.freightnegative_credit}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.ValueAfterDisc_credit}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.totaltax_credit}"></td>
+									<td  style="padding: 10px; text-align: center" class="formatted-value" th:text="${data.value_with_tax_credit}"></td>
+									<td  style="padding: 10px; text-align: center" th:text="${data.docType_credit}"></td>
+									<!-- Add more rows as needed -->
+								</tr>
+								<!-- Repeat <tr> for each row of data -->
+							</tbody>
+						</table>
+			<!-- /.card-footer -->
+
+			<!--  fragment : Main Footer -->
+			<div th:replace="fragments/common :: main-footer"></div>
+			<!-- /. Main Footer -->
+
+
+			<!-- Control Sidebar -->
+			<aside class="control-sidebar control-sidebar-dark">
+				<!-- Control sidebar content goes here -->
+			</aside>
+			<!-- /.control-sidebar -->
+		</div>
+		<!-- ./wrapper -->
+
+		<!--  fragment : Footer Links -->
+		<div th:replace="fragments/common :: footer-links"></div>
+		<!-- /.  Footer Links  -->
+
+
+
+
+		<script>
+
+		$(document).ready(function () {
+			$('#companyCodeDropdown').on('change', function () {
+				let selectedCompanyCodes = $(this).val();
+				$('#selectedCompanyCode').text(selectedCompanyCodes.join(', '));
+
+				if (selectedCompanyCodes.length > 0) {
+					$.ajax({
+						url: '/vkc/reports/getPlantwiseDetails',
+						type: 'POST',
+						contentType: 'application/json', 
+						data: JSON.stringify(selectedCompanyCodes),
+						success: function (response) {
+							console.log('Response:', response); // Debugging response
+							if (Array.isArray(response)) {
+								let options = response.map(plant =>
+									`<option value="${plant['d:Plant']}">${plant['d:Plant']} - ${plant['d:PlantName']}</option>`
+								);
+								$('#plantCodeDropdown').html(options.join(''));
+							} else {
+								console.error('Unexpected response format:', response);
+								alert('Unexpected response format.');
+							}
+						}
+
+					});
+				} else {
+					$('#plantCodeDropdown').empty();
+				}
+				
+				
+				document.querySelectorAll('.formatted-value').forEach(element => {
+							    let value = element.textContent.trim();
+							    if (!isNaN(value) && value !== '') {
+							        value = parseFloat(value);
+							        if (!isNaN(value)) {
+							            element.textContent = formatNumber(value);
+							        }
+							    }
+							});
+			});
+
+			$('#plantCodeDropdown').on('change', function () {
+				let selectedPlantCodes = $(this).val();
+				$('#selectedPlantCode').text(selectedPlantCodes.join(', '));
+			});
+		});
+
+		
+		document.addEventListener('DOMContentLoaded', function() {
+		    // Select All functionality
+		    document.querySelectorAll('.select-all').forEach(function(checkbox) {
+		        checkbox.addEventListener('change', function() {
+		            var targetSelector = this.getAttribute('data-target');
+		            var targetSelect = document.querySelector(targetSelector);
+		            
+		            if (this.checked) {
+		                Array.from(targetSelect.options).forEach(function(option) {
+		                    option.selected = true;
+		                });
+		            } else {
+		                Array.from(targetSelect.options).forEach(function(option) {
+		                    option.selected = false;
+		                });
+		            }
+		            // Trigger change event to update the select2
+		            $(targetSelect).trigger('change');
+		        });
+		    });
+		});
+
+		
+
+	</script>
+
+		<script>
+			
+			document.getElementById('exportExcel').addEventListener('click', function() {
+			    var table = document.getElementById('hiddenTable');
+			    var wb = XLSX.utils.book_new();
+			    var ws = XLSX.utils.table_to_sheet(table);
+			 
+			    
+			    var range = XLSX.utils.decode_range(ws['!ref']);
+			 
+			    var dateColumnIndex = 2; 
+			    var columnsToFormat = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 25, 26, 27, 28];
+			 
+			    function excelDateToJSDate(excelDate) {
+			     
+			        var jsDate = new Date((excelDate - (25567 + 2)) * 86400 * 1000); 
+			        return jsDate;
+			    }
+			 
+			    for (var row = range.s.r; row <= range.e.r; row++) {
+			        for (var col = range.s.c; col <= range.e.c; col++) {
+			            var cell = ws[XLSX.utils.encode_cell({ r: row, c: col })];
+			            if (cell) {
+			                cell.t = 's';
+			 
+			                if (col === dateColumnIndex && !isNaN(cell.v)) {
+			                    var excelSerialDate = parseFloat(cell.v);
+			                    var date = excelDateToJSDate(excelSerialDate);
+			                    var formattedDate = ('0' + date.getDate()).slice(-2) + '-' +
+			                                        ('0' + (date.getMonth() + 1)).slice(-2) + '-' +
+			                                        date.getFullYear();
+			                    cell.v = formattedDate;
+			                }
+			 
+			                if (columnsToFormat.includes(col) && !isNaN(cell.v)) {
+			                    cell.v = Number(cell.v).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+			                }
+			            }
+			        }
+			    }
+			 
+			    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+			    XLSX.writeFile(wb, 'CustomerWisesAndBrandSalesCrNote.xlsx');
+			});
+			
+			
+			$(document).ready(function () {
+									    $('#itemTable').DataTable({
+									        "paging": true,
+									        "lengthMenu": [10, 25, 50],  // Options for rows per page
+									        "searching": true,           // Enable search box
+									        "ordering": true,            // Enable column sorting
+									        "info": true,                // Show info about entries
+									        "retrieve": true             // Ensure the table doesn't reinitialize on every page reload
+									    });
+									});
+			 
+
+	</script>
+</body>
+
+</html>

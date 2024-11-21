@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<!-- fragment :  HeaderLinks -->
+<title>Multivista || G-POS Report</title>
+<div th:replace="Fragments/common :: head"></div>
+
+<style>
+.card{
+box-shadow: 5px 5px 10px #C1DBFE; border-radius:10px;
+}
+
+</style>
+<!--  HeaderLinks -->
+
+<body class="hold-transition  sidebar-collapse">
+	<!-- Site wrapper -->
+	<div class="wrapper">
+
+		<!-- fragment :  Navbar -->
+		<div th:replace="Fragments/common :: TopNavBar ('G-POS Report','/multivista/report/g-pos')"></div>
+		<!-- /.Navbar -->
+
+		<!--  fragment : Main Sidebar Container -->
+
+		<!-- Content Wrapper. Contains page content -->
+		<div class="">
+			<!-- Content Header (Page header) -->
+			<section class="content-header">
+				<div class="container">
+					<form action="" th:object="${Data}"	method="POST">
+						<div class="card">
+							<div class="card-header">
+								<h3 class="card-title">
+									<img src="/dist/img/filter1.png" height="25px;"> Date Selection
+								</h3>
+								<div class="card-tools">
+									<button type="button" class="btn btn-tool" data-card-widget="collapse">
+										<i class="fas fa-minus"></i>
+									</button>
+
+								</div>
+							</div>
+							<div class="card-body">
+								<div class="row">
+
+									<div class="col-md-3">
+										<label><img src="/dist/img/calendar.png" height="20px;"> From Date: <span style="color: red">*</span></label>
+										<input type="date" name="fromDate" required 
+											class="form-control form-control-sm" /> <span
+											th:text="${fromDate}" id="startdate" class="text-bold"></span>
+									</div>
+									<div class="col-md-3">
+										<label><img src="/dist/img/calendar.png"
+											height="20px;"> To Date: <span style="color: red">*</span>
+										</label> <input type="date" name="toDate" 
+											class="form-control form-control-sm"  required /> <span
+											th:text="${toDate}" id="enddate" class="text-bold"></span>
+									</div>
+									<div class="col-md-2 mt-4">
+										<button type="submit" class="btn btn-sm btn-outline-info mt-2">Filter</button>
+									</div>
+
+								</div>
+
+
+							</div>
+						</div>
+					</form>
+				</div><!-- /.container-fluid -->
+			</section>
+
+			<!-- Main content -->
+			<section class="container-fluid">
+
+				<div th:if="${#lists.isEmpty(GPosData)}" align="center" class="card">
+					<span style="text-align: center; color: #ffff"> <img
+						src="/dist/img/NoData3.png" class="text-center"
+						height="350px;">
+					</span>
+					<h5>
+						Select the <img src="/dist/img/calendar.png" height="25px;">
+						Parameters to fetch the G-POS List !!
+					</h5>
+				</div>
+
+				<!-- Default box -->
+				<div class="card card-solid" th:if="!${#lists.isEmpty(GPosData)}">
+						<div class="card-header">
+							<button class="btn btn-info float-right" onclick="GposFunction();"><i class="fa fa-check"></i> Submit Report</button>
+						
+					</div>
+					<div class="card-body" style="overflow-x:auto">
+						<table id="example2"
+							class="table table-hover table-bordered table-sm dataTables-example statusToggle">
+								<thead>
+								<tr style="background-color: #5697B7;" class="text-center">
+									<th>#</th>
+									<th>Delivery Document</th>
+									<th>Delivery Document Item</th>
+									<th>Item Description</th>
+									<th>Extended Resale</th>
+									<th>Total Net Amount</th>
+									<th>ODN Number</th>
+									<th>Assignment </th>
+									<th>Customer Reference</th>
+									<th>Billing Quantity Unit</th>
+									<th>Bill To RA Customer ID</th>
+									<th>Bill To Customer Name</th>
+									<th>Bill To Building</th>
+									<th>Bill To Floor</th>
+									<th>Room Number</th>
+									<th>Bill To StreetCode</th>
+									<th>Bill To Address 1</th>
+									<th>Bill To Address 2</th>
+									<th>Bill To Address 3</th>
+									<!--<th>Bill To Address 4</th>
+									<th>Bill To Address 5</th>-->
+									<th>Bill To City Code</th>
+									<th>Bill To City</th>
+									<th>Bill To Region / State</th><!--1-->
+									<th>Bill To Postal Code</th>
+									<th>Bill To Country</th>
+									<th>Street Address Non-Deliverable Reason</th>
+									<!--<th>Bill To Customer Accnt No</th>-->
+									<th>Bill To National ID</th>
+									<th>Bill To Customer Accnt No</th>
+									<th>Bill to Customer Name</th>
+									<th>Ship To Customer Name</th>
+									<th>Ship To Building</th>
+									<th>Ship To Floor</th>
+									<th>Ship To Room Number</th>
+									<th>Ship To Address 1</th>
+									<th>Ship To Address 2</th>
+									<th>Ship To Address 3</th>
+									<!--<th>Ship To Address 4</th>
+									<th>Ship To Address 5</th>-->
+									<th>Ship To City</th>
+									<th>Ship To Region</th>
+									<th>Ship To Postal Code</th>
+									<th>Ship To Country</th>
+									<th>Ship To Customer Accnt No</th>
+									<th>Ship To National ID</th>
+									<th>Ship To RA Customer ID</th>
+									<th>Vendor Part Number</th>
+									<th>Vendor Catalog Number</th>
+									<!--<th>Buyers Part Number</th>-->
+									<th>UPC</th>
+									<th>Part Number Description</th>
+									<th>Serial Number</th>
+									<th>Currency of Transaction</th>
+									<th>Customer PO Number</th>
+									<th>Distributor Invoice Number</th>
+									<th>Distributor Invoice Item</th>
+									<th>Distributor Invoice Date</th>
+									<th>Sales Document</th> 
+									<th>Customer PO Date</th>
+									<th>Customer Ship Date</th><!--Billing Doucument Date <td title="" th:text=" ${#dates.format(data.dBillingDocumentDate, 'dd-MM-yyyy')}"></td>-->
+									<th>Product</th>
+									<th>Material Group</th>
+									<th>Mat Grp Desc</th>
+									<th>Quantity</th>
+									<th>Extended cost</th>
+									<th>PartnerFunction</th>
+									
+									<th>BILL-TO-DISTRIBUTOR-SLS-PRSN</th>
+									<th>BILL-TO-RA-CUST-ID</th>
+									<th>BUYER-CTLG-NO</th>
+									<th>CUST-WANT-DTE</th>
+									<th>DISTRIBUTOR-BILL-FROM-ADDR1</th>
+									<th>DISTRIBUTOR-BILL-FROM-CITY</th>
+									<th>DISTRIBUTOR-BILL-PostalCode</th>
+									<th>DISTRIBUTOR-BILL- State</th>
+									<th>DISTRIBUTOR-BILL- Country</th>
+									<th>DISTRIBUTOR-BILL-FROM-NAME</th>
+									<th>DISTRIBUTOR-BILL-FROM-PPID</th>
+									<th>DISTRIBUTOR-SHIP-FROM-PPID</th>
+									<th>DISTRIBUTOR-TO-CUST-SHIP-DTE</th>
+									<th>SHIP-TO-DISTRIBUTOR-SLS-PRSN</th>
+									<th>SOLD-TO-ADDR1</th>
+									<th>SOLD-TO-ADDR2</th>
+									<th>SOLD-TO-CITY</th>
+									<th>SOLD-TO-COUNTRY</th>
+									<th>SOLD-TO-CUST-ACCT-NO</th>
+									<th>SOLD-TO-CUST-NAME</th>
+									<th>SOLD-TO-DISTRIBUTOR-SLS-PRSN</th>
+									<th>SOLD-TO-NATIONAL-ID</th>
+									<th>SOLD-TO-RA-CUST-ID</th>
+									<th>SOLD-TO-REGION</th>
+									<th>SOLD-TO-ZIP</th>
+									
+									<th>UPC-12-DIGIT-NO-UD</th>
+									<th>UPC-12-DIGIT-NO-UP</th>
+									<th>UPC-13-DIGIT-NO-EN</th>
+									<th>UPC-13-DIGIT-NO-U2</th>
+									<th>UPC-14-DIGIT-NO</th>
+									<th>UOM</th>
+									
+									<th>Report From Distributor DUNS+4</th>
+									<th>Ship From Distributor DUNS+4 </th>
+									<th>BillToPartyGeneralContact</th>
+									<th>SoldToPartyGeneralContact</th>
+									<th>ShipToPartyGeneralContact</th>
+									<th>Agreement Number</th>
+									<th>ShipFromName</th>
+									
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="data,iterator:${GPosData}">
+									<td title="Delivery Document" th:text="${iterator.index+1}"></td>
+									<td title="Delivery Document Item" th:text="${data.dReferenceSDDocument}"></td>
+									<td title="Item Description" th:text="${data.dReferenceSDDocumentItem}"></td>
+									<td title="Extended Resale" th:text="${data.dBillingDocumentItemText}"></td>
+									<td title="Total Net Amount" class="text-right" th:text="${data.dNetAmount}"></td>
+									<td title="ODN Number" class="text-right" th:text="${data.dTotalNetAmount}"></td>
+						  <!--ODN--><td title="Assignment" th:text="${data.dDocumentReferenceID}"></td>
+									<td title="Customer Reference" th:text="${data.dAssignmentReference}"></td>
+									<td title="Billing Quantity Unit" th:text="${data.dPurchaseOrderByCustomer}"></td>
+									<td title="Bill To RA Customer ID" th:text="${data.dBillingQuantityUnit}"></td>
+									<td title="" th:text="${data.dCustPreviousMasterRecordNumber}"></td>
+									<td title="Bill To Customer Name" th:text="${data.dCustomerName}"></td>
+									<td title="Bill To Building" th:text="${data.dBuilding}"></td>
+									
+									<td title="Bill To Floor" th:text="${data.dFloor}"></td>
+									<td title="Room Number" th:text="${data.dRoomNumber}"></td>
+									<td title="Bill To StreetCode" th:text="${data.dStreet}"></td>
+								
+									<td title="Bill To Address 1" th:text="${data.dStreetName}"></td>
+									<td title="Bill To Address 2" th:text="${data.dStreetSuffixName1}"></td>
+									<td title="Bill To Address 3" th:text="${data.dStreetSuffixName2}"></td>
+									<!--<td title="" th:text="${data.dStreetSuffixName1}"></td>
+									<td title="" th:text="${data.dStreetSuffixName2}"></td>-->
+									<td title="Bill To City Code" th:text="${data.dCityNumber}"></td>
+									<td title="Bill To City "th:text="${data.dCityName}"></td>
+									<td title="Bill To Region / State" th:text="${data.dRegion}"></td>
+									<td title="Bill To Postal Code" th:text="${data.dPostalCode}"></td>
+									<td title="Bill To Country" th:text="${data.dCountry}"></td>
+									<td title="Street Address Non-Deliverable Reason" th:text="${data.dStreetAddrNonDeliverableReason}"></td>
+									<!--<td title="" th:text="${data.dReconciliationAccount}"></td>-->
+									<td title="Bill To National ID" th:text="${data.dTaxNumber3}"></td>
+									<td title="Bill To Customer Accnt No" th:text="${data.dCustomer}"></td>
+									<td title="Bill to Customer Name"></td>
+									<!--Ship To Customer Name--><td title="Ship To Customer Name" th:text="${data.dCustomerName1}"></td>
+									<td title="Ship To Building" th:text="${data.dBuilding1}"></td>
+									<td title="Ship To Floor" th:text="${data.dFloor1}"></td>
+									<td title="Ship To Room Number" th:text="${data.dRoomNumber1}"></td>
+									<td title="Ship To Address 1" th:text="${data.dStreetName1}"></td>
+									<td title="Ship To Address 2" th:text="${data.dStreetSuffixName11}"></td>
+									<td title="Ship To Address 3" th:text="${data.dStreetSuffixName21}"></td>
+									<!--<td title="" th:text="${data.dStreetSuffixName11}"></td>
+									<td title="" th:text="${data.dStreetSuffixName21}"></td>-->
+									<td title="Ship To City" th:text="${data.dCityName1}"></td>
+									<td title="Ship To Region" th:text="${data.dRegion1}"></td>
+									<td title="Ship To Postal Code" th:text="${data.dPostalCode1}"></td>
+									<td title="Ship To Country" th:text="${data.dCountry1}"></td>
+									<td title="Ship To Customer Accnt No" th:text="${data.dReconciliationAccount1}"></td>
+									<td title="Ship To National ID" th:text="${data.dTaxNumber31}"></td>
+									<td title="Ship To RA Customer ID" th:text="${data.dCustomer1}"></td>
+									<td  title="Vendor Part Number"></td>
+									<td title="Vendor Catalog Number" th:text="${data.dProduct}"></td>
+									<td title="UPC" th:text="${data.dProductStandardID}"></td><!--UPC-->
+									<td title="Part Number Description" th:text="${data.dBillingDocumentItemText}"></td>
+									<!--<td title=""></td>-->
+									<td  title="Serial Number"></td>
+									<td title="Currency of Transaction" th:text="${data.dTransactionCurrency}"></td>
+									<td title="" th:text="${data.dPurchaseOrderByCustomer1}"></td>
+									<td title="" th:text="${data.dBillingDocument}"></td><!--Dis Invoice No-->
+									<td title="" th:text="${data.dBillingDocumentItem}"></td>
+									<td title="" th:text=" ${#dates.format(data.dBillingDocumentDate, 'dd-MM-yyyy')}"></td>
+									<td title="" th:text="${data.dSalesDocument}"></td>
+									<td title="" th:text=" ${data.dCustomerPurchaseOrderDateNewFormat}"></td>
+									<td title="" th:text=" ${#dates.format(data.dBillingDocumentDate, 'dd-MM-yyyy')}"></td>
+									<td title="" th:text="${data.dProduct}"></td>
+									<td title="" th:text="${data.dProductGroup}"></td>
+									<td title="" th:text="${data.dMaterialGroupName}"></td>
+									<td title="" th:text="${data.dBillingQuantity}"></td>
+									<td title="" class="text-right" th:text="${data.dEXTENDCOST}"></td>
+									<td title="" th:text="${data.dPartnerFunction}"></td>
+									
+									<td title="" th:text="${data.dVillageName}"></td>
+									<td title=""  th:text="${data.dCustPreviousMasterRecordNumber}"></td>
+									<td title="" th:text="${data.dProductManufacturerNumber}"></td>
+									<td title="Customer Want Date" th:text="${data.dCustomerRequestedDateNewForamt}"></td>
+									<td title="" th:text="${data.dStreetName}"></td>
+									
+									<td title="" th:text="${data.dCityName}"></td>
+									<td title="" th:text="${data.dPostalCode}"></td>
+									<td title="" th:text="${data.dRegion1}"></td>
+									
+									<td title="" th:text="${data.dCountry}"></td>
+									
+									<td title="" th:text="${data.dAddressSearchTerm2}"></td>
+									<td title="" th:text="${data.dAddressSearchTerm2}"></td>
+									<td title="" th:text="${data.dAddressSearchTerm2}"></td>
+									
+									<td title="" th:text="${data.dLRNODateNewForamt}"></td>
+									
+									<td title="" th:text="${data.dVillageName1}"></td>
+									
+									<td title="" th:text="${data.sOLDTOADDR1}"></td>
+									<td title="" th:text="${data.sOLDTOADDR2}"></td>
+									<td title="" th:text="${data.soldToCity}"></td>
+									<td title="" th:text="${data.soldToCountry}"></td>
+									<td title="" th:text="${data.soldToCustomer}"></td>
+									<td title="" th:text="${data.soldToCustomerName}"></td>
+									<td title="" th:text="${data.soldToDistSalesPerson}"></td>
+									<td title="" th:text="${data.soldToNationalId}"></td>
+									<td title="" th:text="${data.soldToRaCustId}"></td>
+									<td title="" th:text="${data.soldToRegion}"></td>
+									<td title="" th:text="${data.soldToZip}"></td>
+									
+									<td  title="UPC-12-DIGIT-NO-UD"></td>
+									<td  title="UPC-12-DIGIT-NO-UP"></td>
+									<td title="UPC-13-DIGIT-NO-EN"></td>
+									<td  title="UPC-13-DIGIT-NO-U2"></td>
+									<td  title="UPC-14-DIGIT-NO"></td>
+									<td  th:text="${data.uom}"></td>
+									
+									
+									<td title="" th:text="${data.dAddressSearchTerm2}"></td>
+									<td title="" th:text="${data.dAddressSearchTerm2}"></td>
+									<td title="" th:text="${data.dVillageName}"></td>
+									<td title="" th:text="${data.dVillageName}"></td>
+									<td title="" th:text="${data.dVillageName1}"></td>
+									<td title="" th:text="${data.agreementNumber_BDI}"></td>
+									<td title="" th:text="${data.plantName}"></td>
+									
+								</tr>
+				</tbody>
+						</table>
+					</div>
+					
+				
+					<!-- /.card-body -->
+
+					<!-- /.card-footer -->
+				</div>
+				<!-- /.card -->
+
+			</section>
+			<!-- /.content -->
+		</div>
+		<!-- /.content-wrapper -->
+
+		<!--  fragment : Main Footer -->
+		<div th:replace="Fragments/common :: main-footer"></div>
+		<!-- /. Main Footer -->
+
+
+		<!-- Control Sidebar -->
+		<aside class="control-sidebar control-sidebar-dark">
+			<!-- Control sidebar content goes here -->
+		</aside>
+		<!-- /.control-sidebar -->
+	</div>
+	<!-- ./wrapper -->
+
+	<!--  fragment : Footer Links -->
+	<!-- jQuery -->
+	<script src="/plugins/jquery/jquery.min.js"></script>
+	
+	<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+	
+	<!-- dropzone Js -->
+	 <script src="/plugins/dropzone/min/dropzone.min.js"></script>
+	 
+	<!-- Bootstrap 4 -->
+	<script src="/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+	
+<!-- Tempusdominus Bootstrap 4 -->
+<!--<script src="/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>-->
+	
+	<!-- DataTables  & Plugins -->
+	<script src="/plugins/datatables/jquery.dataTables.min.js"></script>
+	<script src="/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+	<script
+		src="/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+	<script
+		src="/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+	<script src="/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+	<script src="/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+	<script src="/plugins/jszip/jszip.min.js"></script>
+	<script src="/plugins/pdfmake/pdfmake.min.js"></script>
+	<script src="/plugins/pdfmake/vfs_fonts.js"></script>
+	<script src="/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+	<script src="/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+	<script src="/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+	<!-- AdminLTE App -->
+	<script src="/dist/js/adminlte.min.js"></script>
+	<!-- AdminLTE for demo purposes -->
+	<script src="/dist/js/demo.js"></script>
+	
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+<script>
+  $(function () {
+    $("#example2,#example3,#example4,#example5").DataTable({
+      "responsive": true, 
+      "lengthChange": false, 
+      "autoWidth": false,
+      "paging": false,
+      "lengthChange": false,
+      "searching": true,
+      "ordering": false,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+       "buttons": [
+		    // { extend: 'copyHtml5', footer: true },
+		     { extend: 'excelHtml5', footer: true },
+		     { extend: 'csvHtml5', footer: true },
+		     { extend: 'pdfHtml5', footer: true }
+		     //{ extend:  'colvis', footer: true }
+
+		 ]
+     // "buttons": ["csv", "excel", "pdf", "print"],
+      //"sDom": '<"row view-filter"<"col-sm-12"<"pull-left"l><"pull-right"f><"clearfix">>>t<"row view-pager"<"col-sm-12"<"text-center"ip>>>',
+      //, "colvis" , "copy", 
+    }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0) ,#example3_wrapper .col-md-6:eq(0),#example4_wrapper .col-md-6:eq(0)');
+  });
+
+</script>
+<script>
+$('.select2').select2();
+</script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<!-- /.  Footer Links  -->
+	<script>
+		function functionToTrigger() {
+				Swal.fire({
+					icon: 'info',
+					title: 'Confirm All Information related to "Gpos" is Available to Submit to Rockwell ?'
+				}).then((result) => {
+					/* Read more about isConfirmed, isDenied below */
+					if (result.isConfirmed) {
+						WIP();
+					} else if (result.isDenied) {
+						Swal.fire("Changes are not saved", "", "info");
+					}
+				});
+
+			}
+
+			function WIP() {
+				Swal.fire(
+					'WIP',
+					'Work In Progress !!',
+					'warning'
+				)
+
+			}
+			
+			/**
+ * 
+ */
+
+	function GposFunction() {
+			Swal.fire({
+					icon: 'info',
+					title: 'Confirm All Information related to "Gpos" is Available to Submit to Rockwell ?'
+				}).then((result) => {
+					/* Read more about isConfirmed, isDenied below */
+					if (result.isConfirmed) {
+						GposTrigger();
+					} else if (result.isDenied) {
+						Swal.fire("Changes are not saved", "", "info");
+					}
+				});
+	} 
+	
+	
+	function GposTrigger(){
+		var stardate = document.getElementById("startdate").textContent;
+		var enddate = document.getElementById("enddate").textContent;
+
+
+		var tables = $('#example2').find('tbody tr');
+		var tableHeaders = $('#example2').find('thead th');
+		
+
+		var dataToSend = {
+			"fromDate": stardate,
+			"toDate": enddate,
+			"lineItem": getRowData()
+		};
+
+		console.log(JSON.stringify(dataToSend));
+
+		$.ajax({
+			method: 'POST',
+			url: "/multivista/report/g-pos/filters/save",
+			contentType: "application/json; charset=utf-8",
+			data: JSON.stringify(dataToSend),
+			success: function (data) {
+				Swal.fire(
+					'Successfully Shared the G-Pos Report!',
+					'You clicked the button!',
+					'success'
+				)
+				// location.reload(true);
+			}
+		});
+
+	}
+	function getRowData() {
+			console.log("Submit");
+			let tableRows = $('tr');
+			console.log(tableRows);
+			var arr = [];
+			var keys = []; // Array to store table header keys
+			tableRows.each(function (i, row) {
+				var obj = {};
+				let cells = $(row).find('td');
+				console.log(cells);
+				if (i == 0) {
+					let tableHeader = $(row).find('th');
+					tableHeader.each(function (k, th) {
+						keys.push($(th).text()); // Store table header keys
+					});
+				} else {
+					cells.each(function (j, cell) {
+						
+						if(keys[j]==="Net Amount" || keys[j]==="Extended Resale" || keys[j]==="Quantity"){
+							var netamount=$(cell).text();
+							obj[keys[j]] = parseFloat(netamount);
+							console.log(parseFloat(netamount));
+						}else if(keys[j]==="Customer PO Date"){
+							
+						}else{
+							obj[keys[j]] = $(cell).text(); // Assign cell values to respective header keys
+							console.log($(cell).text());
+						}
+						
+						
+					});
+				}
+				if (i > 0) arr.push(obj);
+			});
+			console.log(arr);
+			return arr;
+		}
+
+
+	</script>
+</body>
+
+</html>
